@@ -1,0 +1,21 @@
+{
+  "name": "json_data_filtering",
+  "version": "0.0.1",
+  "description": "A simple program to generate a new JSON file with the data selected during data filtering of a JSON file",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "json",
+    "data-filtering",
+    "json-tool"
+  ],
+  "author": "leonlit",
+  "email": "leonlit123@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "prompts": "2.3.2"
+  }
+}
