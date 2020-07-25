@@ -21,12 +21,34 @@ function generateJsonFile (json, oldName) {
     }); 
 }
 
-function getAvObjKeys (jsonArr, isArray) {
+function getAvObjKeys (json, isArray) {
+    let avKeys = []
     if (isArray) {
-        return Object.keys(jsonArr[0]);
+        json.forEach(ele => {
+            let getKeys = Object.keys(ele);
+            getKeys.forEach(key => {
+                if (typeof ele[key] === "object") {
+                    if (!avKeys.includes(key)) {
+                        avKeys.push(key);
+                    }
+                    let inner = Object.keys(ele[key]);
+                    inner.forEach(innerKey => {
+                        let temp = `${key}.${innerKey}`;
+                        if (!avKeys.includes(temp)) {
+                            avKeys.push(temp);
+                        }
+                    });
+                }else {
+                    if (!avKeys.includes(key)) {
+                        avKeys.push(key);
+                    }
+                }
+            });
+        });
     }else {
         return Object.keys(jsonArr);
     }
+    return avKeys
 }
 
 function isJson (data) {
@@ -53,7 +75,23 @@ function filteredJson (json, options, isArray) {
     if (isArray) {
         json.forEach(ele => {
             options.forEach(key => {
-                delete ele[key]
+                if (key.includes(".")) {
+                    let tempKey = key.split(".");
+                    let arrLen = tempKey.length
+                    
+                    //referencing the object to a new variable
+                    let obj = ele;
+                    //loop through the accessing query
+                    for (let i = 0; i < arrLen - 1; i++) {
+                        let ele = tempKey[i];
+                        if( !obj[ele] ) obj[ele] = {}
+                        //accessing objects by stacking them together and pass them to the delete section
+                        obj = obj[ele];
+                    }
+                    delete obj[tempKey[arrLen-1]];
+                }else {
+                    delete ele[key]
+                }
             });
         });
     }else {
