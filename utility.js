@@ -46,7 +46,7 @@ function getAvObjKeys (json, isArray) {
             });
         });
     }else {
-        return Object.keys(jsonArr);
+        return Object.keys(json);
     }
     return avKeys
 }

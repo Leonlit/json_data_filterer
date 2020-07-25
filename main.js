@@ -71,8 +71,13 @@ async function getFilterOptions(json) {
 
                 const newJson = utils.filteredJson(json, optionsArr, Array.isArray(json));
                 console.log("data example");
-                console.log(newJson[0]);
-                console.log("generating file in desktop...");
+                if (Array.isArray(newJson)) {
+                    console.log(newJson[0]);
+                }else {
+                    console.log(newJson);
+                }
+
+                console.log("\ngenerating file in desktop...");
                 utils.generateJsonFile(newJson, fileName);
 
                 inputError = false;
