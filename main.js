@@ -1,30 +1,30 @@
 const prompts = require("prompts");
 const utils = require("./utility.js");
+const path = require("path");
 
-const loc = "C:\\Users\\User\\Desktop\\cityList.json";
+let fileName = "";
 
 //first method to be invoked
 (async () => {
     
     //getting the file location from user
-    //console.log("Please input the location of the JSON file : \n");
-    //const getLocation = await getUserInput("text", "Please provide the program with the file location of the json file \n");
+    console.log("Please input the location of the JSON file : \n");
+    const getLocation = await getUserInput("text", "Please provide the program with the file location of the json file \n");
+    fileName = path.basename(getLocation);
 
     //getting the file content of the data
     utils.getFileData((data)=> {
-        
-        if(!utils.isJson(data)) {
+        if(utils.isJson(data)) {
             try {
-                data = data.toString();
-                json = JSON.parse(data);
+                data = JSON.parse(data);
+                getFilterOptions(data)
             }catch (err) {
                 console.log("The file contents isn't in JSON format")
             }
         }else {
-            json = JSON.parse(data);
+            console.log("\nWrong file format, the file isn't in JSON format. exiting program...\n")
         }
-        getFilterOptions(json)
-    }, loc); //getLocation);
+    }, getLocation); 
 })();
 
 async function getFilterOptions(json) {
@@ -43,12 +43,12 @@ async function getFilterOptions(json) {
         console.log("\n");
         
         //getting user input
-        let options = await getUserInput("text", "Please specify which key that you want to remove from the json file?  \n");
+        let options = await getUserInput("text", "Please specify which key that you want to remove from the json file?\nmultiple key are separated with commas (,)\n\n");
         let inputError = true;
         
         //make sure that the input is correct
         while (inputError) {
-            let confirm = await getUserInput("text", `\nIs this/these the keys that you want to remove from the json file? [y/n] : \n ${options}\n`);
+            const confirm = await getUserInput("text", `\n\nIs this/these the keys that you want to remove from the json file? [y/n] : \n\n\t${options}\n\n`);
             if (confirm[0] == "y") {
                 let optionsArr;
                 try {
@@ -61,7 +61,7 @@ async function getFilterOptions(json) {
                 }
 
                 //check if the options given by user is a valid JSON object's key
-                let isValidOptions = utils.checkOptions(optionsArr, avObjKeys);
+                const isValidOptions = utils.checkOptions(optionsArr, avObjKeys);
                 
                 //if not valid skip other operation and loop back the options input again
                 if (!isValidOptions) {
@@ -69,7 +69,12 @@ async function getFilterOptions(json) {
                     break;
                 }
 
-                const newJson = utils.filteredJson(json, optionsArr);
+                const newJson = utils.filteredJson(json, optionsArr, Array.isArray(json));
+                console.log("data example");
+                console.log(newJson[0]);
+                console.log("generating file in desktop...");
+                utils.generateJsonFile(newJson, fileName);
+
                 inputError = false;
                 done = true;
                 break;

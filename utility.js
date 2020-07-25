@@ -1,4 +1,5 @@
 const fs = require("fs");
+const homeDir = require('os').homedir();
 
 function getFileData (callback ,file) {
     fs.readFile(file, "utf8", (err, data)=> {
@@ -8,6 +9,16 @@ function getFileData (callback ,file) {
             callback(data);
         }
     });
+}
+
+const desktopLoc = `${homeDir}\\Desktop`;
+
+function generateJsonFile (json, oldName) {
+    const newName = `filtered_${oldName}`;
+    fs.writeFile(`${desktopLoc}\\${newName}`, JSON.stringify(json), function (err) {
+        if (err) throw err;
+        console.log('File is created successfully.');
+    }); 
 }
 
 function getAvObjKeys (jsonArr, isArray) {
@@ -38,13 +49,20 @@ function checkOptions (optionsArr, objKeys) {
     return result;
 }
 
-function filteredJson (json, options) {
-    json.forEach(ele => {
-        options.forEach(key => {
-            delete ele[key]
+function filteredJson (json, options, isArray) {
+    if (isArray) {
+        json.forEach(ele => {
+            options.forEach(key => {
+                delete ele[key]
+            });
         });
-    });
-    console.log(json[0]);
+    }else {
+        options.forEach(ele => {
+            delete json[ele]
+        });
+    }
+    return json;
 }
 
-module.exports = {getFileData, getAvObjKeys, isJson, filteredJson, checkOptions}
+module.exports = {getFileData, getAvObjKeys, isJson, 
+                filteredJson, checkOptions, generateJsonFile}
