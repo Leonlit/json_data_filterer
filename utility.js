@@ -118,24 +118,12 @@ function checkOptions (optionsArr, objKeys) {
     return result;
 }
 
-function filteredJson (json, options, isArray) {
-    if (isArray) {
+function filteredJson (json, options) {
+    if (isArray(json)) {
         json.forEach(ele => {
             options.forEach(key => {
                 if (key.includes(".")) {
-                    let tempKey = key.split(".");
-                    let arrLen = tempKey.length
-                    
-                    //referencing the object to a new variable
-                    let obj = ele;
-                    //loop through the accessing query
-                    for (let i = 0; i < arrLen - 1; i++) {
-                        let ele = tempKey[i];
-                        if( !obj[ele] ) obj[ele] = {}
-                        //accessing objects by stacking them together and pass them to the delete section
-                        obj = obj[ele];
-                    }
-                    delete obj[tempKey[arrLen-1]];
+                    filterInnerData(ele, key)
                 }else {
                     delete ele[key]
                 }
@@ -143,10 +131,30 @@ function filteredJson (json, options, isArray) {
         });
     }else {
         options.forEach(ele => {
-            delete json[ele]
+            if (ele.includes(".")) {
+                filterInnerData(json, ele)
+            }else {
+                delete json[ele]
+            }
         });
     }
     return json;
+}
+
+function filterInnerData (parent, key) {
+    let tempKey = key.split(".");
+    let arrLen = tempKey.length
+    
+    //referencing the object to a new variable
+    let obj = parent;
+    //loop through the accessing query
+    for (let i = 0; i < arrLen - 1; i++) {
+        let ele = tempKey[i];
+        if( !obj[ele] ) obj[ele] = {}
+        //accessing objects by stacking them together and pass them to the delete section
+        obj = obj[ele];
+    }
+    delete obj[tempKey[arrLen-1]];
 }
 
 module.exports = {getFileData, getAvObjKeys, isJson, 
