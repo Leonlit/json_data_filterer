@@ -54,25 +54,16 @@ function getInnerKey (parentEle, currEle, avKeys, head="") {
             avKeys.push(nameTemp);
         }
         if (isArray(theELe)) {
-            theELe.forEach(ele => {
-                
+            theELe.forEach(arrEle => {
+                let getKeys = Object.keys(arrEle);
+                getKeys.forEach(innerKey => {
+                    generateInnerKey(theELe, currEle, innerKey, avKeys, head);
+                });
             });
         }else {
             let inner = Object.keys(theELe);
             inner.forEach(innerKey => {
-                let childKey = `${currEle}.${innerKey}`;
-                if (head != "") {
-                    childKey = `${head}.${innerKey}`;
-                }
-                if (!avKeys.includes(childKey)) {
-                    avKeys.push(childKey);
-                }
-                if (isObject(theELe[innerKey])) {
-                    let tempHolder = getInnerKey(theELe, innerKey, avKeys, childKey);
-                    if (tempHolder != null && tempHolder != undefined && tempHolder != []) {
-                        avKeys.concat(tempHolder);
-                    }
-                }
+                generateInnerKey(theELe, currEle, innerKey, avKeys, head);
             });
         }
     }else {
@@ -81,6 +72,22 @@ function getInnerKey (parentEle, currEle, avKeys, head="") {
         }
     }
     return avKeys;
+}
+
+function generateInnerKey (theELe, currEle, innerKey, avKeys, head) {
+    let childKey = `${currEle}.${innerKey}`;
+    if (head != "") {
+        childKey = `${head}.${innerKey}`;
+    }
+    if (!avKeys.includes(childKey)) {
+        avKeys.push(childKey);
+    }
+    if (isObject(theELe[innerKey])) {
+        let tempHolder = getInnerKey(theELe, innerKey, avKeys, childKey);
+        if (tempHolder != null && tempHolder != undefined && tempHolder != []) {
+            avKeys.concat(tempHolder);
+        }
+    }
 }
 
 function isJson (data) {
