@@ -23,32 +23,44 @@ function generateJsonFile (json, oldName) {
 
 function getAvObjKeys (json, isArray) {
     let avKeys = []
-    if (isArray) {
-        json.forEach(ele => {
-            let getKeys = Object.keys(ele);
-            getKeys.forEach(key => {
-                if (typeof ele[key] === "object") {
-                    if (!avKeys.includes(key)) {
-                        avKeys.push(key);
-                    }
-                    let inner = Object.keys(ele[key]);
-                    inner.forEach(innerKey => {
-                        let temp = `${key}.${innerKey}`;
-                        if (!avKeys.includes(temp)) {
-                            avKeys.push(temp);
-                        }
-                    });
-                }else {
-                    if (!avKeys.includes(key)) {
-                        avKeys.push(key);
-                    }
-                }
+    if (typeof json == "object") {
+        if (isArray) {
+            json.forEach(ele => {
+                let getKeys = Object.keys(ele);
+                getKeys.forEach(key => {
+                    getInnerKey(ele, key, avKeys)
+                });
             });
-        });
+        }else {
+            let getKeys = Object.keys(json);
+            getKeys.forEach(key => {
+                getInnerKey(json, key, avKeys)
+            });
+        }
+        return avKeys
     }else {
         return Object.keys(json);
     }
-    return avKeys
+}
+
+function getInnerKey (parentEle, currEle, avKeys) {
+    if (typeof parentEle[currEle] === "object") {
+        if (!avKeys.includes(currEle)) {
+            avKeys.push(currEle);
+        }
+        let inner = Object.keys(parentEle[currEle]);
+        inner.forEach(innerKey => {
+            let temp = `${currEle}.${innerKey}`;
+            if (!avKeys.includes(temp)) {
+                avKeys.push(temp);
+            }
+        });
+    }else {
+        if (!avKeys.includes(currEle)) {
+            avKeys.push(currEle);
+        }
+    }
+    return avKeys;
 }
 
 function isJson (data) {
