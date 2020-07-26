@@ -23,7 +23,7 @@ function generateJsonFile (json, oldName) {
 
 function getAvObjKeys (json, isArray) {
     let avKeys = []
-    if (typeof json == "object") {
+    if (isObject(json)) {
         if (isArray) {
             json.forEach(ele => {
                 let getKeys = Object.keys(ele);
@@ -43,18 +43,38 @@ function getAvObjKeys (json, isArray) {
     }
 }
 
-function getInnerKey (parentEle, currEle, avKeys) {
-    if (typeof parentEle[currEle] === "object") {
-        if (!avKeys.includes(currEle)) {
-            avKeys.push(currEle);
+function getInnerKey (parentEle, currEle, avKeys, head="") {
+    let theELe = parentEle[currEle];
+    if (isObject(theELe)) {
+        let nameTemp = "";
+        if (head == "") {
+            nameTemp = currEle;
         }
-        let inner = Object.keys(parentEle[currEle]);
-        inner.forEach(innerKey => {
-            let temp = `${currEle}.${innerKey}`;
-            if (!avKeys.includes(temp)) {
-                avKeys.push(temp);
-            }
-        });
+        if (!avKeys.includes(nameTemp) && nameTemp != "") {
+            avKeys.push(nameTemp);
+        }
+        if (isArray(theELe)) {
+            theELe.forEach(ele => {
+                
+            });
+        }else {
+            let inner = Object.keys(theELe);
+            inner.forEach(innerKey => {
+                let childKey = `${currEle}.${innerKey}`;
+                if (head != "") {
+                    childKey = `${head}.${innerKey}`;
+                }
+                if (!avKeys.includes(childKey)) {
+                    avKeys.push(childKey);
+                }
+                if (isObject(theELe[innerKey])) {
+                    let tempHolder = getInnerKey(theELe, innerKey, avKeys, childKey);
+                    if (tempHolder != null && tempHolder != undefined && tempHolder != []) {
+                        avKeys.concat(tempHolder);
+                    }
+                }
+            });
+        }
     }else {
         if (!avKeys.includes(currEle)) {
             avKeys.push(currEle);
@@ -70,6 +90,14 @@ function isJson (data) {
         return false;
     }
     return true;
+}
+
+function isArray (data) {
+    return Array.isArray(data);
+}
+
+function isObject (data) {
+    return typeof data == "object";
 }
 
 function checkOptions (optionsArr, objKeys) {
