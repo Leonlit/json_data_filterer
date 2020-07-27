@@ -147,14 +147,34 @@ function filterInnerData (parent, key) {
     
     //referencing the object to a new variable
     let obj = parent;
-    //loop through the accessing query
-    for (let i = 0; i < arrLen - 1; i++) {
-        let ele = tempKey[i];
-        if( !obj[ele] ) obj[ele] = {}
-        //accessing objects by stacking them together and pass them to the delete section
-        obj = obj[ele];
+    if (isObject(obj[tempKey[0]]) || isObject(obj[key])) {
+        //loop through the accessing query
+        if  (isArray(obj[tempKey[0]])) {
+            obj[tempKey[0]].forEach(inner=>{
+                if (isObject(obj[tempKey[0]][inner])) {
+                    filterInnerData(inner, key.substring(tempKey[0].length, key.length - tempKey[0].length));
+                }else {
+                    delete obj[tempKey[0]][inner];
+                }
+            });
+        }else {
+            for (let i = 0; i < arrLen - 1; i++) {
+                let ele = tempKey[i];
+                if( !obj[ele] ) obj[ele] = {}
+
+                if (isArray(obj[ele])) {
+                    obj[ele].forEach(inner=> {
+                    filterInnerData(inner, tempKey.splice(i + 1, tempKey.length).join("."));
+                })
+                }
+                //accessing objects by stacking them together and pass them to the delete section
+                obj = obj[ele];
+            }
+            delete obj[tempKey[arrLen-1]];
+        }
+    }else {
+        delete obj[key];
     }
-    delete obj[tempKey[arrLen-1]];
 }
 
 module.exports = {getFileData, getAvObjKeys, isJson, 
