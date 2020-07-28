@@ -20,7 +20,7 @@ function generateJsonFile (json, oldName) {
     const newName = `filtered_${oldName}`;
     fs.writeFile(`${desktopLoc}\\${newName}`, JSON.stringify(json), function (err) {
         if (err) throw err;
-        console.log('File is created successfully.');
+        console.log('File is created successfully.\n\n');
     }); 
 }
 
