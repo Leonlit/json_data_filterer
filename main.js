@@ -68,7 +68,8 @@ async function getFilterOptions(json) {
                     console.log("\nError : Some of the options that you've provided are not valid. Please re-enter the options...\n")
                     break;
                 }
-
+                console.time("filtering");
+                //filter the data that user don't want
                 const newJson = utils.filteredJson(json, optionsArr, Array.isArray(json));
                 console.log("data example");
                 if (Array.isArray(newJson)) {
@@ -77,9 +78,10 @@ async function getFilterOptions(json) {
                     console.log(newJson);
                 }
 
+                //generate a file with the name of "filtered_"[oldfile name]
                 console.log("\ngenerating file in desktop...");
                 utils.generateJsonFile(newJson, fileName);
-
+                console.timeEnd("filtering");
                 inputError = false;
                 done = true;
                 break;
