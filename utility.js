@@ -25,17 +25,17 @@ function generateJsonFile (json, oldName) {
 }
 
 //return all the availble key of the json data
-function getAvObjKeys (json, isArray) {
-    let avKeys = []
+function getAvObjKeys (json) {
+    let avKeys = [];
     if (isObject(json)) {
         //in current level, is the element in array form or object form?
-        if (isArray) {
+        if (isArray(json)) {
             //if is array loop through the element and pass its content to the getInnerKey() function
             //to find its inner elements key 
             json.forEach(ele => {
                 let getKeys = Object.keys(ele);
                 getKeys.forEach(key => {
-                    getInnerKey(ele, key, avKeys)
+                    getInnerKey(ele, key, avKeys);
                 });
             });
         }else {
@@ -43,7 +43,7 @@ function getAvObjKeys (json, isArray) {
             //get the current level keys and pass the json, inner key and available-key array (avKeys) to the getInnerkey()
             let getKeys = Object.keys(json);
             getKeys.forEach(key => {
-                getInnerKey(json, key, avKeys)
+                getInnerKey(json, key, avKeys); 
             });
         }
         return avKeys
@@ -54,7 +54,7 @@ function getAvObjKeys (json, isArray) {
 
 //in this function, find the name for the inner key and check if the content of an property is an object or value
 //  parentEle   - an json object
-//  currEle     - the property name
+//  currEle     - the key name
 //  avKeys      - the array which contains the list of available keys for the json file
 //  head        - the string that hold the name of the previous level json key
 function getInnerKey (parentEle, currEle, avKeys, head="") {
@@ -80,7 +80,7 @@ function getInnerKey (parentEle, currEle, avKeys, head="") {
                 getKeys.forEach(innerKey => {
                     //  arrEle      - an json array element
                     //  currEle     - the name of the current key
-                    //  innerKey    - the name of the next level key
+                    //  innerKey    - the name of the next level property key
                     //  avKeys      - the array which contains the list of available keys for the json file
                     //  head        - the string that hold the name of the previous level json key
                     generateInnerKey(arrEle, currEle, innerKey, avKeys, head);
@@ -210,11 +210,12 @@ function filterInnerData (parent, key) {
     if (isObject(obj[tempKey[0]]) || isObject(obj[key])) {
         //if the content of the object is an array
         if  (isArray(obj[tempKey[0]])) {
-            obj[tempKey[0]].forEach(inner=>{
-                if (isObject(obj[tempKey[0]][inner])) {
+            let theObj = obj[tempKey[0]]
+            theObj.forEach(inner=>{
+                if (isObject(theObj[inner])) {
                     filterInnerData(inner, key.substring(tempKey[0].length, key.length - tempKey[0].length));
                 }else {
-                    delete obj[tempKey[0]][inner];
+                    delete theObj[inner];
                 }
             });
         }else {
@@ -222,15 +223,17 @@ function filterInnerData (parent, key) {
             //loop through the option string array to get the reference to the object by stacking the object
             for (let i = 0; i < arrLen - 1; i++) {
                 let ele = tempKey[i];
-                if( !obj[ele] ) obj[ele] = {}
-                    //if the element is an array, then call the filterInnerData() function again
-                    if (isArray(obj[ele])) {
-                        obj[ele].forEach(inner=> {
-                        //with the content of the array passed to the function
-                        //  inner               - the content of the lower level json
-                        //  tempKey.splice(.... - to cut of the processed key name before the current loop
-                        filterInnerData(inner, tempKey.splice(i + 1, tempKey.length).join("."));
-                    })
+                if( !obj[ele] ) {
+                    obj[ele] = {};
+                }
+                //if the element is an array, then call the filterInnerData() function again
+                if (isArray(obj[ele])) {
+                    obj[ele].forEach(inner=> {
+                    //with the content of the array passed to the function
+                    //  inner               - the content of the lower level json
+                    //  tempKey.splice(.... - to cut of the processed key name before the current loop
+                    filterInnerData(inner, tempKey.splice(i + 1, tempKey.length).join("."));
+                })
                 }
                 //then if there's no array, just continue with the object reference stacking
                 //accessing objects by stacking them together and pass them to the delete section

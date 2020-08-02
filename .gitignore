@@ -1,1 +1,5 @@
 node_modules
+#since I'm using some json file to test the program
+*.json
+#I also used text file to test the program, and it also works
+*.txt 

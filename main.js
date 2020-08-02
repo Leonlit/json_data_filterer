@@ -15,21 +15,17 @@ let fileName = "";
     //getting the file content of the data
     utils.getFileData((data)=> {
         if(utils.isJson(data)) {
-            try {
-                data = JSON.parse(data);
-                getFilterOptions(data)
-            }catch (err) {
-                console.log("The file contents isn't in JSON format")
-            }
+            data = JSON.parse(data);
+            finishOperation(data)
         }else {
             console.log("\nWrong file format, the file isn't in JSON format. exiting program...\n")
         }
     }, getLocation); 
 })();
 
-async function getFilterOptions(json) {
+async function finishOperation(json) {
     //get the available key of the json (works for either array of objects or object)
-    const avObjKeys = utils.getAvObjKeys(json, Array.isArray(json));
+    const avObjKeys = utils.getAvObjKeys(json);
 
     //getting the key to be deleted
     let done  = false;
@@ -99,5 +95,6 @@ async function getUserInput (type, message) {
         name: "data",
         message: message
     });
+    console.log(getData.data);
     return getData.data;
 }
