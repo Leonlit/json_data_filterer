@@ -123,11 +123,7 @@ function generateInnerKey (theELe, currEle, innerKey, avKeys, head) {
     }
     //if the inner element content is an object, call the getInnerKey() again.
     if (isObject(theELe[innerKey])) {
-        let tempHolder = getInnerKey(theELe, innerKey, avKeys, childKey);
-        //if the returned value isn't null, combine the array with avKeys
-        if (tempHolder != null && tempHolder != undefined && tempHolder != []) {
-            avKeys.concat(tempHolder);
-        }
+        getInnerKey(theELe, innerKey, avKeys, childKey);
     }
 }
 
