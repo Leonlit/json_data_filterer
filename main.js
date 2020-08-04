@@ -45,16 +45,12 @@ async function finishOperation(json) {
         //make sure that the input is correct
         while (inputError) {
             const confirm = await getUserInput("text", `\n\nIs this/these the keys that you want to remove from the json file? [y/n] : \n\n\t${options}\n\n`);
-            if (confirm[0] == "y") {
+            const confirmation = confirm.toLowerCase();
+            if (confirmation[0] == "y") {
                 let optionsArr;
-                try {
-                    //converting strings to array
-                    optionsArr = options.split(",")
-                                .map(e=>e.trim());
-                }catch (err) {
-                    console.log("\nError in seperating the options. Please make surer they're separated by commas (,)\n");
-                    break;
-                }
+                //converting strings to array
+                optionsArr = options.split(",")
+                            .map(e=>e.trim());
 
                 //check if the options given by user is a valid JSON object's key
                 const isValidOptions = utils.checkOptions(optionsArr, avObjKeys);
@@ -78,8 +74,7 @@ async function finishOperation(json) {
                 utils.generateJsonFile(newJson, fileName);
                 inputError = false;
                 done = true;
-                break;
-            }else if (confirm[0] == "n"){
+            }else if (confirmation[0] == "n"){
                 console.log("restarting operation...");
                 inputError = false;
             }else {
