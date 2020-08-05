@@ -157,7 +157,7 @@ function checkOptions (optionsArr, objKeys) {
 }
 
 //function for filtering json data from the selected options
-function filteredJson (json, options) {
+function filterJSON (json, options) {
     //if the current json data is in array form
     if (isArray(json)) {
         json.forEach(ele => {
@@ -208,11 +208,7 @@ function filterInnerData (parent, key) {
         if  (isArray(obj[tempKey[0]])) {
             let theObj = obj[tempKey[0]]
             theObj.forEach(inner=>{
-                if (isObject(theObj[inner])) {
-                    filterInnerData(inner, key.substring(tempKey[0].length, key.length - tempKey[0].length));
-                }else {
-                    delete theObj[inner];
-                }
+                filterInnerData(inner, key.substring(tempKey[0].length, key.length - tempKey[0].length));
             });
         }else {
             //if the content of the element is not an array, its an object
@@ -245,4 +241,4 @@ function filterInnerData (parent, key) {
 }
 
 module.exports = {getFileData, getAvObjKeys, isJson, 
-                filteredJson, checkOptions, generateJsonFile}
+                filterJSON, checkOptions, generateJsonFile}

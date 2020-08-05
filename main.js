@@ -61,7 +61,7 @@ async function finishOperation(json) {
                     break;
                 }
                 //filter the data that user don't want
-                const newJson = utils.filteredJson(json, optionsArr, Array.isArray(json));
+                const newJson = utils.filterJSON(json, optionsArr);
                 console.log("\n\ndata example");
                 if (Array.isArray(newJson)) {
                     console.log(newJson[0]);
