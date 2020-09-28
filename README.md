@@ -1,5 +1,5 @@
 # Json_data_filterer
-A simple program that generate a new JSON file with the data that's filtered during data filtering of a JSON file.
+A simple program that generate a new JSON file with the data that's filtered during data filtering of a JSON file. You can read more on how I wrote this script in [this blog post](https://devtavern.blogspot.com/2020/08/how-did-i-created-json-file-data.html).
 
 ## setting up
 
