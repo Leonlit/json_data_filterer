@@ -29,9 +29,6 @@ Everything after this is all based on the JSON file location that you've provide
 
 
 ## Contact
-If you have any question or suggestion regarding the project, feel free to contact me. If you found any bugs in the program, please contact me if you can. Thanks :D 
+If you have any question or suggestion regarding the project or you found any bugs in the program, please feel free to open an issue at the issue section
 
-### [leonlit](https://github.com/Leonlit) :
- - [twitter](https://twitter.com/leonlit)
- - [email](leonlit123@gmail.com)
 
